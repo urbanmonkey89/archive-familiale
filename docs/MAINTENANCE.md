@@ -51,15 +51,17 @@ installez Rust depuis https://rustup.rs et les « Visual Studio Build Tools » (
 
 ## Mise en place de GitHub (une seule fois)
 
-1. Créer un compte sur https://github.com, puis un **dépôt public** (ex. `archive-familiale`).
-2. Dans `src-tauri/tauri.conf.json`, remplacer `PROPRIETAIRE/DEPOT` par `votre-compte/archive-familiale`.
-3. Dans le dépôt GitHub → **Settings → Secrets and variables → Actions → New repository secret** :
+Dépôt : https://github.com/urbanmonkey89/archive-familiale (public). Les commits utilisent l'adresse
+masquée `346520026+urbanmonkey89@users.noreply.github.com` (configurée dans ce dépôt local).
+
+1. ✅ Dépôt public créé, adresse renseignée dans `src-tauri/tauri.conf.json` (mises à jour automatiques).
+2. Dans le dépôt GitHub → **Settings → Secrets and variables → Actions → New repository secret** :
    - `TAURI_SIGNING_PRIVATE_KEY` : le contenu du fichier `C:\Users\<vous>\.tauri\archive-familiale.key`
    - (pas de `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` : la clé a été créée sans mot de passe)
 
    ⚠️ Cette clé signe les mises à jour : **ne la partagez jamais, ne la mettez jamais dans le dépôt**,
    et gardez-en une copie (sans elle, les applications installées ne pourront plus se mettre à jour).
-4. Envoyer le code : `git remote add origin https://github.com/votre-compte/archive-familiale.git` puis `git push -u origin main`.
+3. ✅ Code envoyé (`git push`). Ensuite, chaque modification s'envoie avec `git push`.
 
 ## Publier une nouvelle version de l'application
 
