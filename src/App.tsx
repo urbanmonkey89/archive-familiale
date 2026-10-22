@@ -12,6 +12,7 @@ import { ModalHost } from './forms/ModalHost';
 import { openModal } from './ui/modals';
 import { href, useRoute, type Route } from './ui/router';
 import { SearchBox } from './ui/SearchBox';
+import { UpdateBanner } from './ui/UpdateBanner';
 
 export function App() {
   const archive = useApp((s) => s.archive);
@@ -24,8 +25,12 @@ export function App() {
   if (isStaticSite() && !archive) {
     return <div className="welcome"><p>{siteError ?? 'Chargement…'}</p></div>;
   }
-  if (!archive) return <Welcome />;
-  return <Shell />;
+  return (
+    <>
+      <UpdateBanner />
+      {archive ? <Shell /> : <Welcome />}
+    </>
+  );
 }
 
 function Shell() {

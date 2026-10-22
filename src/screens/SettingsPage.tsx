@@ -67,6 +67,7 @@ export function SettingsPage() {
         </div>
 
         <ExportPanel />
+        <p className="faint small">Archive familiale, version {__APP_VERSION__}</p>
       </div>
     </section>
   );
