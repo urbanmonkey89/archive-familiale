@@ -63,12 +63,11 @@ export function Avatar({ person, size = 36, fontSize }: { person: Person | undef
       className="avatar"
       style={{
         width: size, height: size, fontSize: fontSize ?? Math.round(size * 0.38),
-        background: person ? tintOf(person.id) : '#8a8270',
-        backgroundImage: url ? `url("${url}")` : undefined,
+        backgroundColor: person ? tintOf(person.id) : '#8a8270',
       }}
       aria-hidden
     >
-      {!url && initials(person)}
+      {url ? <img src={url} alt="" draggable={false} /> : initials(person)}
     </span>
   );
 }
