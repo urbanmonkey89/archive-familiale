@@ -40,13 +40,45 @@ export function go(hash: string) {
   if (location.hash !== hash) location.hash = hash;
 }
 
+// ───────── Parcours de navigation (pour le lien « ← retour ») ─────────
+
+const norm = (h: string) => (h && h !== '#' ? h : '#/');
+
+/** Écrans visités, du plus ancien au plus récent. On en retire un quand on revient en arrière. */
+const trail: string[] = [typeof location !== 'undefined' ? norm(location.hash) : '#/'];
+/** Position de défilement de chaque écran, restaurée quand on y revient. */
+const scrolls = new Map<string, number>();
+let lastWasBack = false;
+
+if (typeof window !== 'undefined') window.addEventListener('hashchange', (e) => {
+  const from = norm(new URL(e.oldURL).hash);
+  const to = norm(location.hash);
+  scrolls.set(from, window.scrollY);
+  lastWasBack = trail.length > 1 && trail[trail.length - 2] === to;
+  if (lastWasBack) trail.pop();
+  else trail.push(to);
+});
+
+/** Écran précédent dans le parcours, s'il y en a un. */
+export function previousHash(): string | null {
+  return trail.length > 1 ? trail[trail.length - 2] : null;
+}
+
+/** Revient à l'écran précédent comme le bouton « Précédent » du navigateur. */
+export function goBack() {
+  history.back();
+}
+
 export function useRoute(): Route {
   const [route, setRoute] = useState(() => parseRoute(location.hash));
   useEffect(() => {
     const on = () => {
       const r = parseRoute(location.hash);
       setRoute(r);
-      if (r.name !== 'tree') window.scrollTo(0, 0);
+      if (r.name === 'tree') return;
+      const y = lastWasBack ? scrolls.get(norm(location.hash)) ?? 0 : 0;
+      // Après l'affichage du nouvel écran.
+      requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, y)));
     };
     window.addEventListener('hashchange', on);
     return () => window.removeEventListener('hashchange', on);

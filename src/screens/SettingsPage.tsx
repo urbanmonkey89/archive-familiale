@@ -5,6 +5,7 @@ import { Field, PersonSelect } from '../ui/components';
 import { confirmAction } from '../ui/modals';
 import { href } from '../ui/router';
 import { ExportPanel } from './ExportPanel';
+import { BackLink } from '../ui/BackLink';
 
 const NEW_COLORS = ['#a9763f', '#5a6b86', '#5b7a5e', '#866a78', '#8a4f43', '#6a7d7a', '#7d6a6a'];
 
@@ -16,7 +17,7 @@ export function SettingsPage() {
 
   return (
     <section className="screen narrow" style={{ paddingTop: 40 }}>
-      <a className="back" href={href.home()}>← Retour</a>
+      <BackLink fallbackHref={href.home()} fallbackLabel="Toute la famille" />
       <div className="page-head">
         <div>
           <div className="eyebrow">Réglages</div>

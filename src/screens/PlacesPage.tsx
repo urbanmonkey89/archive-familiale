@@ -4,6 +4,7 @@ import { useArchive, useCanEdit } from '../data/store';
 import { Avatar, BranchPill, MediaImg, SectionTitle, placeTypeColor } from '../ui/components';
 import { openModal } from '../ui/modals';
 import { href } from '../ui/router';
+import { BackLink } from '../ui/BackLink';
 
 export function PlacesPage() {
   const archive = useArchive();
@@ -62,7 +63,7 @@ export function PlacePage({ id }: { id: string }) {
   if (!pl) {
     return (
       <section className="screen narrow">
-        <a className="back" href={href.places()}>← Tous les lieux</a>
+        <BackLink fallbackHref={href.places()} fallbackLabel="Tous les lieux" />
         <p className="muted">Ce lieu n'existe pas (ou plus).</p>
       </section>
     );
@@ -74,7 +75,7 @@ export function PlacePage({ id }: { id: string }) {
 
   return (
     <section className="screen narrow">
-      <a className="back" href={href.places()}>← Tous les lieux</a>
+      <BackLink fallbackHref={href.places()} fallbackLabel="Tous les lieux" />
       <div className="profile-grid">
         <div className="profile-side">
           <div className="profile-card">

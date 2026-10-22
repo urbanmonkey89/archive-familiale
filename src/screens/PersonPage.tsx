@@ -6,6 +6,7 @@ import { useArchive, useCanEdit } from '../data/store';
 import { Avatar, BranchPill, MediaImg, PersonChip, SectionTitle, placeTypeColor } from '../ui/components';
 import { openModal } from '../ui/modals';
 import { href } from '../ui/router';
+import { BackLink } from '../ui/BackLink';
 import { STATUS_LABEL, statusColor } from '../ui/unionStatus';
 
 interface TLItem {
@@ -24,7 +25,7 @@ export function PersonPage({ id }: { id: string }) {
   if (!p) {
     return (
       <section className="screen narrow">
-        <a className="back" href={href.home()}>← Toute la famille</a>
+        <BackLink fallbackHref={href.home()} fallbackLabel="Toute la famille" />
         <p className="muted">Cette personne n'existe pas (ou plus) dans l'archive.</p>
       </section>
     );
@@ -43,7 +44,7 @@ export function PersonPage({ id }: { id: string }) {
 
   return (
     <section className="screen narrow">
-      <a className="back" href={href.home()}>← Toute la famille</a>
+      <BackLink fallbackHref={href.home()} fallbackLabel="Toute la famille" />
       <div className="profile-grid">
         <div className="profile-side">
           <div className="profile-card">
