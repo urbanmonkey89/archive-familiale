@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Mulish',system-ui,sans-serif}
+  input,select,textarea,button{font-family:inherit}
+  ::placeholder{color:#a89e89}
+  @keyframes mpop{from{transform:translateY(14px) scale(.99)}to{transform:none}}
+  @keyframes scrfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:{{ pageBg }};color:#22302b;font-size:15px;line-height:1.5">
+
+  <!-- TOP BAR -->
+  <header style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:28px;height:68px;padding:0 32px;background:#14241d;color:#efe7d4;border-bottom:1px solid rgba(184,138,62,.35)">
+    <div onClick="{{ goHome }}" style="display:flex;align-items:center;gap:12px;cursor:pointer;flex-shrink:0">
+      <div style="width:34px;height:34px;border-radius:50%;border:1.5px solid {{ accent }};display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:17px;color:{{ accent }}">W</div>
+      <div style="line-height:1.1">
+        <div style="font-family:'Spectral',serif;font-size:19px;letter-spacing:.3px">Whitfield</div>
+        <div style="font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#9aa89a">Family Archive</div>
+      </div>
+    </div>
+    <nav style="display:flex;align-items:center;gap:4px;margin-left:8px">
+      <button onClick="{{ goHome }}" style="background:none;border:none;color:#efe7d4;font-size:14px;font-weight:600;padding:8px 4px;margin-right:18px;cursor:pointer;border-bottom:2px solid {{ ulFam }}">Family</button>
+      <button onClick="{{ goTree }}" style="background:none;border:none;color:#efe7d4;font-size:14px;font-weight:600;padding:8px 4px;margin-right:18px;cursor:pointer;border-bottom:2px solid {{ ulTree }}">Tree</button>
+      <button onClick="{{ goPhotos }}" style="background:none;border:none;color:#efe7d4;font-size:14px;font-weight:600;padding:8px 4px;margin-right:18px;cursor:pointer;border-bottom:2px solid {{ ulPhotos }}">Photos</button>
+      <button onClick="{{ goPlaces }}" style="background:none;border:none;color:#efe7d4;font-size:14px;font-weight:600;padding:8px 4px;cursor:pointer;border-bottom:2px solid {{ ulPlaces }}">Places</button>
+    </nav>
+    <div style="flex:1"></div>
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 12px;width:210px">
+      <span style="color:#8fa08f;font-size:13px">⌕</span>
+      <input placeholder="Search family…" style="background:none;border:none;outline:none;color:#efe7d4;font-size:13px;width:100%">
+    </div>
+    <button onClick="{{ openAdd }}" style="display:flex;align-items:center;gap:7px;background:{{ accent }};color:#1a130a;border:none;border-radius:8px;padding:9px 15px;font-size:13.5px;font-weight:700;cursor:pointer" style-hover="filter:brightness(1.07)">
+      <span style="font-size:16px;line-height:1">＋</span> Add person
+    </button>
+  </header>
+
+  <main ref="{{ setScroll }}" style="flex:1;overflow-y:auto">
+
+    <!-- ============ HOME ============ -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <section data-screen-label="Home — Family overview" style="max-width:1160px;margin:0 auto;padding:40px 32px 64px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:34px">
+        <div>
+          <div style="font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:{{ accent }};font-weight:700;margin-bottom:10px">The Family</div>
+          <h1 style="font-family:'Spectral',serif;font-size:46px;font-weight:500;line-height:1.05;letter-spacing:-.5px">The Whitfields</h1>
+          <p style="color:#837a68;margin-top:10px;font-size:15px">{{ memberCount }} people · 4 generations · keeping the record since 1928</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 332px;gap:36px;align-items:start">
+        <!-- members -->
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+            <h2 style="font-family:'Spectral',serif;font-size:21px;font-weight:500">Family members</h2>
+            <div style="flex:1;height:1px;background:#e6ddca"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:16px">
+            <sc-for list="{{ members }}" as="m" hint-placeholder-count="8">
+              <div onClick="{{ m.open }}" style="background:#fffefa;border:1px solid #e6ddca;border-left:4px solid {{ m.branchColor }};border-radius:14px;padding:20px;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease" style-hover="transform:translateY(-3px);box-shadow:0 10px 26px -12px rgba(20,36,29,.32)">
+                <div style="display:flex;align-items:center;gap:14px">
+                  <div style="width:54px;height:54px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:20px;color:#f4eee2;background:{{ m.tint }}">{{ m.initials }}</div>
+                  <div style="min-width:0">
+                    <div style="font-family:'Spectral',serif;font-size:18px;font-weight:500;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.first }}</div>
+                    <div style="font-size:12px;color:{{ accent }};font-weight:600;letter-spacing:.3px">{{ m.role }}</div>
+                  </div>
+                </div>
+                <div style="margin-top:14px;padding-top:13px;border-top:1px solid #efe7d6;font-size:13px;color:#837a68">{{ m.dates }}</div>
+              </div>
+            </sc-for>
+            <div onClick="{{ openAdd }}" style="border:1.5px dashed #cfc4ac;border-radius:14px;padding:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#9a8f78;min-height:118px" style-hover="border-color:{{ accent }};color:{{ accent }}">
+              <div style="font-size:26px;line-height:1">＋</div>
+              <div style="font-size:13.5px;font-weight:600">Add a person</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- sidebar -->
+        <aside style="display:flex;flex-direction:column;gap:20px">
+          <sc-if value="{{ showPrompts }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#14241d;border-radius:16px;padding:22px;color:#efe7d4">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <span style="color:{{ accent }}">✦</span>
+              <h3 style="font-family:'Spectral',serif;font-size:18px;font-weight:500">Keep it up to date</h3>
+            </div>
+            <p style="font-size:12.5px;color:#9aa89a;margin-bottom:16px">A few small things would round out the record.</p>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ prompts }}" as="g" hint-placeholder-count="3">
+                <button onClick="{{ g.open }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:11px 13px;color:#efe7d4;font-size:13px;cursor:pointer;width:100%" style-hover="background:rgba(184,138,62,.16);border-color:{{ accent }}">
+                  <span>{{ g.text }}</span>
+                  <span style="color:{{ accent }};font-weight:700;flex-shrink:0">→</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <div style="background:#fffefa;border:1px solid #e6ddca;border-radius:16px;padding:22px">
+            <h3 style="font-family:'Spectral',serif;font-size:18px;font-weight:500;margin-bottom:16px">Recent activity</h3>
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <sc-for list="{{ activity }}" as="a" hint-placeholder-count="4">
+                <div style="display:flex;gap:12px">
+                  <div style="width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:13px;color:#f4eee2;background:{{ a.tint }}">{{ a.ini }}</div>
+                  <div style="min-width:0">
+                    <div style="font-size:13px;line-height:1.4">{{ a.text }}</div>
+                    <div style="font-size:11.5px;color:#a89e89;margin-top:2px">{{ a.time }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ PROFILE ============ -->
+    <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ true }}">
+    <section data-screen-label="Person profile" style="max-width:1100px;margin:0 auto;padding:28px 32px 72px">
+      <button onClick="{{ goHome }}" style="background:none;border:none;color:#837a68;font-size:13.5px;font-weight:600;cursor:pointer;padding:6px 0;margin-bottom:18px" style-hover="color:{{ accent }}">← All family</button>
+
+      <div style="display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:start">
+        <!-- profile card -->
+        <div style="position:sticky;top:92px">
+          <div style="background:#fffefa;border:1px solid #e6ddca;border-radius:18px;overflow:hidden">
+            <div style="position:relative;height:300px;background:repeating-linear-gradient(135deg,#efe7d6 0 11px,#e9e0cc 11px 22px);display:flex;align-items:center;justify-content:center">
+              <div style="width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:38px;color:#f4eee2;background:{{ person.tint }};box-shadow:0 8px 22px -8px rgba(20,36,29,.4)">{{ person.initials }}</div>
+              <span style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:'Mono',ui-monospace,monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#b3a78c">portrait photo</span>
+            </div>
+            <div style="padding:22px">
+              <h1 style="font-family:'Spectral',serif;font-size:29px;font-weight:500;line-height:1.1">{{ person.name }}</h1>
+              <sc-if value="{{ person.hasMaiden }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Spectral',serif;font-style:italic;color:#837a68;font-size:15px;margin-top:2px">née {{ person.maiden }}</div></sc-if>
+              <div style="display:inline-block;margin-top:10px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:{{ accent }}">{{ person.role }}</div>
+              <sc-if value="{{ person.hasBranch }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:6px;margin-left:8px;font-size:11px;font-weight:700;color:#5a5446;background:#f3ede0;border-radius:999px;padding:3px 10px 3px 8px;vertical-align:middle"><span style="width:9px;height:9px;border-radius:50%;background:{{ person.branchColor }}"></span>{{ person.branchLabel }}</span></sc-if>
+              <div style="margin-top:16px;display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#5a5446">
+                <div style="display:flex;gap:10px"><span style="color:#a89e89;width:54px;flex-shrink:0">Life</span><span>{{ person.dates }}</span></div>
+                <sc-if value="{{ person.hasPlace }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:10px"><span style="color:#a89e89;width:54px;flex-shrink:0">From</span><span>{{ person.place }}</span></div></sc-if>
+              </div>
+              <button onClick="{{ editPerson }}" style="margin-top:18px;width:100%;background:#f3ede0;border:1px solid #e0d6c0;border-radius:9px;padding:10px;font-size:13px;font-weight:600;color:#5a5446;cursor:pointer" style-hover="background:#ece3d2">Edit details</button>
+            </div>
+          </div>
+
+          <!-- relationships -->
+          <div style="background:#fffefa;border:1px solid #e6ddca;border-radius:18px;padding:20px;margin-top:18px">
+            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#a89e89;font-weight:700;margin-bottom:12px">Relationships</div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <sc-if value="{{ person.hasParents }}" hint-placeholder-val="{{ true }}">
+                <div>
+                  <div style="font-size:12px;color:#837a68;margin-bottom:7px">Parents</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px">
+                    <sc-for list="{{ person.parents }}" as="r" hint-placeholder-count="2">
+                      <button onClick="{{ r.open }}" style="display:flex;align-items:center;gap:8px;background:#f6f1e6;border:1px solid #e6ddca;border-radius:999px;padding:5px 12px 5px 5px;cursor:pointer;font-size:13px;color:#22302b" style-hover="border-color:{{ accent }}"><span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:11px;color:#f4eee2;background:{{ r.tint }}">{{ r.initials }}</span>{{ r.first }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ person.hasPartners }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <div style="font-size:12px;color:#837a68;margin-bottom:7px">Marriages &amp; partners</div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <sc-for list="{{ person.partners }}" as="r" hint-placeholder-count="1">
+                      <button onClick="{{ r.open }}" style="display:flex;align-items:center;gap:9px;background:#f6f1e6;border:1px solid #e6ddca;border-radius:12px;padding:7px 11px 7px 7px;cursor:pointer;text-align:left;width:100%" style-hover="border-color:{{ accent }}">
+                        <span style="width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:12px;color:#f4eee2;background:{{ r.tint }}">{{ r.initials }}</span>
+                        <span style="min-width:0;flex:1;line-height:1.25">
+                          <span style="display:block;font-size:13.5px;color:#22302b">{{ r.first }}</span>
+                          <span style="display:block;font-size:11px;color:#a89e89">{{ r.years }}</span>
+                        </span>
+                        <span style="flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:{{ r.statusColor }};border:1px solid {{ r.statusColor }};border-radius:999px;padding:2px 8px">{{ r.statusLabel }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ person.hasChildren }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <div style="font-size:12px;color:#837a68;margin-bottom:7px">Children</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px">
+                    <sc-for list="{{ person.children }}" as="r" hint-placeholder-count="2">
+                      <button onClick="{{ r.open }}" style="display:flex;align-items:center;gap:8px;background:#f6f1e6;border:1px solid #e6ddca;border-radius:999px;padding:5px 12px 5px 5px;cursor:pointer;font-size:13px;color:#22302b" style-hover="border-color:{{ accent }}"><span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:11px;color:#f4eee2;background:{{ r.tint }}">{{ r.initials }}</span>{{ r.first }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+
+        <!-- timeline + stories -->
+        <div>
+          <sc-if value="{{ person.hasBio }}" hint-placeholder-val="{{ true }}">
+            <p style="font-family:'Spectral',serif;font-size:20px;line-height:1.5;color:#3a3a31;margin-bottom:34px;text-wrap:pretty">{{ person.bio }}</p>
+          </sc-if>
+
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <h2 style="font-family:'Spectral',serif;font-size:21px;font-weight:500">Life timeline</h2>
+            <div style="flex:1;height:1px;background:#e6ddca"></div>
+          </div>
+          <div style="position:relative;padding-left:30px">
+            <div style="position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:#e6ddca"></div>
+            <div style="display:flex;flex-direction:column;gap:26px">
+              <sc-for list="{{ person.timeline }}" as="e" hint-placeholder-count="5">
+                <div style="position:relative">
+                  <div style="position:absolute;left:-30px;top:4px;width:12px;height:12px;border-radius:50%;background:{{ accent }};border:2px solid {{ pageBg }};box-shadow:0 0 0 2px #e6ddca"></div>
+                  <div style="font-size:12.5px;font-weight:700;color:{{ accent }};letter-spacing:.5px">{{ e.year }}</div>
+                  <div style="font-family:'Spectral',serif;font-size:18px;font-weight:500;margin-top:1px">{{ e.title }}</div>
+                  <sc-if value="{{ e.hasDetail }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:#6a6358;margin-top:3px">{{ e.detail }}</div></sc-if>
+                  <sc-if value="{{ e.hasPhoto }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:11px;height:140px;width:240px;border-radius:10px;background:repeating-linear-gradient(135deg,#efe7d6 0 11px,#e9e0cc 11px 22px);display:flex;align-items:flex-end;padding:8px"><span style="font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:#b3a78c">photo</span></div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- stories -->
+          <div style="display:flex;align-items:center;gap:10px;margin:42px 0 22px">
+            <h2 style="font-family:'Spectral',serif;font-size:21px;font-weight:500">Stories</h2>
+            <div style="flex:1;height:1px;background:#e6ddca"></div>
+            <button onClick="{{ editPerson }}" style="background:none;border:none;color:{{ accent }};font-size:13px;font-weight:700;cursor:pointer">＋ Add</button>
+          </div>
+          <sc-if value="{{ person.hasStories }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <sc-for list="{{ person.stories }}" as="s" hint-placeholder-count="2">
+                <div style="background:#fffefa;border:1px solid #e6ddca;border-radius:14px;padding:20px;display:flex;gap:18px">
+                  <sc-if value="{{ s.hasPhoto }}" hint-placeholder-val="{{ false }}">
+                    <div style="width:96px;height:96px;flex-shrink:0;border-radius:10px;background:repeating-linear-gradient(135deg,#efe7d6 0 9px,#e9e0cc 9px 18px)"></div>
+                  </sc-if>
+                  <div>
+                    <div style="font-family:'Spectral',serif;font-size:18px;font-weight:500">{{ s.title }}</div>
+                    <p style="font-size:14px;color:#6a6358;margin-top:6px;line-height:1.55;text-wrap:pretty">{{ s.excerpt }}</p>
+                    <div style="font-size:12px;color:#a89e89;margin-top:10px">Told by {{ s.author }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ person.noStories }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ editPerson }}" style="width:100%;background:none;border:1.5px dashed #cfc4ac;border-radius:14px;padding:24px;color:#9a8f78;font-size:14px;cursor:pointer" style-hover="border-color:{{ accent }};color:{{ accent }}">No stories yet — be the first to add one about {{ person.first }}.</button>
+          </sc-if>
+
+          <!-- photos -->
+          <div style="display:flex;align-items:center;gap:10px;margin:42px 0 18px">
+            <h2 style="font-family:'Spectral',serif;font-size:21px;font-weight:500">Photos</h2>
+            <div style="flex:1;height:1px;background:#e6ddca"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <sc-if value="{{ person.hasAlbumPhotos }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ person.albumPhotos }}" as="ph" hint-placeholder-count="3">
+                <div style="aspect-ratio:1;border-radius:10px;background:repeating-linear-gradient(135deg,#efe7d6 0 10px,#e9e0cc 10px 20px);position:relative;overflow:hidden;display:flex;align-items:flex-end"><span style="font-size:10px;color:#5a5446;background:rgba(255,254,250,.9);padding:4px 7px;border-radius:6px;margin:6px;line-height:1.25">{{ ph.caption }}</span></div>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ person.noAlbumPhotos }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ person.photoCells }}" as="p" hint-placeholder-count="3">
+                <div style="aspect-ratio:1;border-radius:10px;background:repeating-linear-gradient(135deg,#efe7d6 0 10px,#e9e0cc 10px 20px)"></div>
+              </sc-for>
+            </sc-if>
+            <div onClick="{{ person.addPhoto }}" style="aspect-ratio:1;border-radius:10px;border:1.5px dashed #cfc4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#9a8f78;cursor:pointer" style-hover="border-color:{{ accent }};color:{{ accent }}"><span style="font-size:22px;line-height:1">＋</span><span style="font-size:11px">Add</span></div>
+          </div>
+
+          <sc-if value="{{ person.hasPlaces }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:10px;margin:42px 0 18px">
+            <h2 style="font-family:'Spectral',serif;font-size:21px;font-weight:500">Places</h2>
+            <div style="flex:1;height:1px;background:#e6ddca"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ person.places }}" as="pl" hint-placeholder-count="2">
+              <button onClick="{{ pl.open }}" style="display:flex;align-items:center;gap:14px;background:#fffefa;border:1px solid #e6ddca;border-radius:12px;padding:13px 16px;cursor:pointer;text-align:left;width:100%" style-hover="border-color:{{ accent }}">
+                <span style="width:10px;height:10px;border-radius:3px;flex-shrink:0;background:{{ pl.typeColor }}"></span>
+                <span style="flex:1;min-width:0">
+                  <span style="display:block;font-family:'Spectral',serif;font-size:16px;font-weight:500;color:#22302b">{{ pl.name }}</span>
+                  <span style="display:block;font-size:12.5px;color:#837a68">{{ pl.type }} · {{ pl.location }} · {{ pl.era }}</span>
+                </span>
+                <span style="color:{{ accent }};font-weight:700;flex-shrink:0">→</span>
+              </button>
+            </sc-for>
+          </div>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ TREE ============ -->
+    <sc-if value="{{ isTree }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Family tree" style="max-width:1280px;margin:0 auto;padding:40px 24px 72px">
+      <div style="text-align:center;margin-bottom:36px">
+        <div style="font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:{{ accent }};font-weight:700;margin-bottom:8px">Four generations</div>
+        <h1 style="font-family:'Spectral',serif;font-size:38px;font-weight:500">Family tree</h1>
+        <div style="display:flex;justify-content:center;gap:26px;margin-top:18px;font-size:12px;color:#6a6358;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:7px"><span style="display:inline-block;width:24px;border-top:2px solid {{ accent }}"></span><span style="color:{{ accent }};font-size:11px">&#9829;</span> Married</span>
+          <span style="display:flex;align-items:center;gap:7px"><span style="display:inline-block;width:24px;border-top:2px dashed #a4604a"></span><span style="color:#a4604a;font-size:11px">&#9829;</span> Divorced</span>
+          <span style="display:flex;align-items:center;gap:7px"><span style="display:inline-block;width:24px;border-top:2px dashed #8a8270"></span><span style="color:#8a8270;font-size:11px">&#9829;</span> Widowed</span>
+        </div>
+        <div style="display:flex;justify-content:center;align-items:center;gap:18px;margin-top:14px;flex-wrap:wrap">
+          <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#a89e89;font-weight:700">Branches</span>
+          <sc-for list="{{ branchLegend }}" as="b" hint-placeholder-count="3">
+            <span style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#5a5446;font-weight:600">
+              <span style="width:13px;height:13px;border-radius:4px;background:{{ b.color }}"></span>{{ b.label }}
+            </span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="position:relative">
+      <div style="position:absolute;top:-6px;right:4px;z-index:6;display:flex;align-items:center;gap:4px;background:#fffefa;border:1px solid #e6ddca;border-radius:999px;padding:5px 6px;box-shadow:0 8px 22px -12px rgba(20,36,29,.45)">
+        <button onClick="{{ zoomOut }}" title="Zoom out" style="width:30px;height:30px;border:none;border-radius:50%;background:#f3ede0;color:#5a5446;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#ece3d2">−</button>
+        <button onClick="{{ zoomReset }}" title="Reset zoom" style="min-width:52px;height:30px;border:none;border-radius:999px;background:none;color:#5a5446;font-size:12.5px;font-weight:700;cursor:pointer;letter-spacing:.3px" style-hover="color:{{ accent }}">{{ treeZoomPct }}</button>
+        <button onClick="{{ zoomIn }}" title="Zoom in" style="width:30px;height:30px;border:none;border-radius:50%;background:#f3ede0;color:#5a5446;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#ece3d2">＋</button>
+      </div>
+      <div ref="{{ setTreeScroll }}" style="overflow:auto;max-height:74vh;padding:8px 0 24px;border:1px solid #ece3d2;border-radius:18px;background:#faf6ec">
+      <div style="width:{{ treeCanvasW }};height:{{ treeCanvasH }};margin:0 auto;position:relative">
+      <div ref="{{ setTreeInner }}" style="transform:scale({{ treeZoom }});transform-origin:top left;position:absolute;top:0;left:0;display:flex;flex-direction:column;align-items:center;gap:0;min-width:1624px">
+        <!-- gen 1 -->
+        <dc-import name="TreeCouple" a="{{ t.james }}" b="{{ t.eleanor }}" link="{{ uJamesEleanor }}" ex="{{ exJames }}" has-ex="{{ hasExJames }}" accent="{{ accent }}" hint-size="792px,64px"></dc-import>
+        <div style="width:2px;height:30px;background:{{ cFounders }}"></div>
+        <div style="width:51%;height:2px;background:{{ cFounders }}"></div>
+        <div style="display:flex;justify-content:center;gap:40px;width:100%">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div style="width:2px;height:30px;background:{{ cCole }}"></div>
+            <dc-import name="TreeCouple" a="{{ t.margaret }}" b="{{ t.tom }}" link="{{ uMargaretTom }}" ex="{{ exMargaret }}" has-ex="{{ hasExMargaret }}" accent="{{ accent }}" hint-size="792px,64px"></dc-import>
+            <div style="width:2px;height:30px;background:{{ cCole }}"></div>
+            <dc-import name="TreeNode" p="{{ t.sarah }}" accent="{{ accent }}" hint-size="150px,64px"></dc-import>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div style="width:2px;height:30px;background:{{ cRobert }}"></div>
+            <dc-import name="TreeCouple" a="{{ t.robert }}" b="{{ t.lucia }}" link="{{ uRobertLucia }}" accent="{{ accent }}" hint-size="792px,64px"></dc-import>
+            <div style="width:2px;height:30px;background:{{ cRobert }}"></div>
+            <dc-import name="TreeNode" p="{{ t.daniel }}" accent="{{ accent }}" hint-size="150px,64px"></dc-import>
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ PHOTOS ============ -->
+    <sc-if value="{{ isPhotos }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Photo album" style="max-width:1100px;margin:0 auto;padding:40px 32px 72px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:30px">
+        <div>
+          <div style="font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:{{ accent }};font-weight:700;margin-bottom:8px">Shared album</div>
+          <h1 style="font-family:'Spectral',serif;font-size:38px;font-weight:500">Photos</h1>
+        </div>
+        <button onClick="{{ openAddPhoto }}" style="display:flex;align-items:center;gap:7px;background:{{ accent }};color:#1a130a;border:none;border-radius:9px;padding:10px 16px;font-size:13.5px;font-weight:700;cursor:pointer" style-hover="filter:brightness(1.07)"><span style="font-size:16px;line-height:1">＋</span> Upload photo</button>
+      </div>
+      <div style="columns:4;column-gap:14px">
+        <sc-for list="{{ album }}" as="ph" hint-placeholder-count="12">
+          <div style="break-inside:avoid;margin-bottom:14px">
+            <div style="border-radius:12px;background:repeating-linear-gradient(135deg,#efe7d6 0 11px,#e9e0cc 11px 22px);height:{{ ph.h }}"></div>
+            <div style="font-size:12.5px;color:#22302b;margin-top:8px;font-weight:500">{{ ph.caption }}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">
+              <sc-if value="{{ ph.hasPerson }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ ph.person.open }}" style="display:flex;align-items:center;gap:6px;background:#f6f1e6;border:1px solid #e6ddca;border-radius:999px;padding:3px 10px 3px 3px;cursor:pointer;font-size:11.5px;color:#5a5446" style-hover="border-color:{{ accent }}"><span style="width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:9px;color:#f4eee2;background:{{ ph.person.tint }}">{{ ph.person.initials }}</span>{{ ph.person.first }}</button>
+              </sc-if>
+              <sc-if value="{{ ph.hasPlace }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ ph.place.open }}" style="display:flex;align-items:center;gap:6px;background:#f6f1e6;border:1px solid #e6ddca;border-radius:999px;padding:3px 11px;cursor:pointer;font-size:11.5px;color:#5a5446" style-hover="border-color:{{ accent }}"><span style="width:8px;height:8px;border-radius:2px;background:{{ ph.place.typeColor }}"></span>{{ ph.place.name }}</button>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ PLACES ============ -->
+    <sc-if value="{{ isPlaces }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Places" style="max-width:1160px;margin:0 auto;padding:40px 32px 72px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:30px">
+        <div>
+          <div style="font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:{{ accent }};font-weight:700;margin-bottom:8px">Where it happened</div>
+          <h1 style="font-family:'Spectral',serif;font-size:38px;font-weight:500">Places</h1>
+          <p style="color:#837a68;margin-top:8px;font-size:15px">The homes, rooms and corners of the world the family kept — each tagged with the people who lived them.</p>
+        </div>
+        <button onClick="{{ openAddPlace }}" style="display:flex;align-items:center;gap:7px;background:{{ accent }};color:#1a130a;border:none;border-radius:9px;padding:10px 16px;font-size:13.5px;font-weight:700;cursor:pointer;flex-shrink:0" style-hover="filter:brightness(1.07)"><span style="font-size:16px;line-height:1">＋</span> Add a place</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px">
+        <sc-for list="{{ placesList }}" as="pl" hint-placeholder-count="6">
+          <div onClick="{{ pl.open }}" style="background:#fffefa;border:1px solid #e6ddca;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease" style-hover="transform:translateY(-3px);box-shadow:0 12px 28px -14px rgba(20,36,29,.34)">
+            <div style="position:relative;height:158px;background:repeating-linear-gradient(135deg,#efe7d6 0 11px,#e9e0cc 11px 22px)">
+              <span style="position:absolute;top:12px;left:12px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#fffefa;border-radius:999px;padding:4px 10px;background:{{ pl.typeColor }}">{{ pl.type }}</span>
+            </div>
+            <div style="padding:18px 20px 20px">
+              <h3 style="font-family:'Spectral',serif;font-size:20px;font-weight:500;line-height:1.15">{{ pl.name }}</h3>
+              <div style="font-size:12.5px;color:#837a68;margin-top:3px">{{ pl.location }} · {{ pl.era }}</div>
+              <p style="font-size:13.5px;color:#6a6358;margin-top:10px;line-height:1.5;text-wrap:pretty">{{ pl.blurb }}</p>
+              <div style="display:flex;align-items:center;gap:5px;margin-top:15px;flex-wrap:wrap">
+                <sc-for list="{{ pl.peopleShown }}" as="pp" hint-placeholder-count="3">
+                  <span title="{{ pp.name }}" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:12px;color:#f4eee2;background:{{ pp.tint }}">{{ pp.initials }}</span>
+                </sc-for>
+                <sc-if value="{{ pl.hasMore }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#837a68;margin-left:4px">+{{ pl.moreCount }} more</span></sc-if>
+                <sc-if value="{{ pl.noPeople }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#a89e89">No people tagged yet</span></sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+        <div onClick="{{ openAddPlace }}" style="border:1.5px dashed #cfc4ac;border-radius:16px;min-height:200px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#9a8f78" style-hover="border-color:{{ accent }};color:{{ accent }}"><span style="font-size:28px;line-height:1">＋</span><span style="font-size:13.5px;font-weight:600">Add a place</span></div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ============ PLACE DETAIL ============ -->
+    <sc-if value="{{ isPlace }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Place detail" style="max-width:1100px;margin:0 auto;padding:28px 32px 72px">
+      <button onClick="{{ goPlaces }}" style="background:none;border:none;color:#837a68;font-size:13.5px;font-weight:600;cursor:pointer;padding:6px 0;margin-bottom:18px" style-hover="color:{{ accent }}">← All places</button>
+      <div style="display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:start">
+        <div style="position:sticky;top:92px">
+          <div style="background:#fffefa;border:1px solid #e6ddca;border-radius:18px;overflow:hidden">
+            <div style="position:relative;height:220px;background:repeating-linear-gradient(135deg,#efe7d6 0 11px,#e9e0cc 11px 22px)">
+              <span style="position:absolute;top:14px;left:14px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#fffefa;border-radius:999px;padding:4px 11px;background:{{ place.typeColor }}">{{ place.type }}</span>
+              <span style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#b3a78c">place photo</span>
+            </div>
+            <div style="padding:22px">
+              <h1 style="font-family:'Spectral',serif;font-size:26px;font-weight:500;line-height:1.12">{{ place.name }}</h1>
+              <sc-if value="{{ place.hasBranch }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;font-weight:700;color:#5a5446;background:#f3ede0;border-radius:999px;padding:3px 10px 3px 8px"><span style="width:9px;height:9px;border-radius:50%;background:{{ place.branchColor }}"></span>{{ place.branchLabel }}</span></sc-if>
+              <div style="margin-top:16px;display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#5a5446">
+                <div style="display:flex;gap:10px"><span style="color:#a89e89;width:54px;flex-shrink:0">Where</span><span>{{ place.location }}</span></div>
+                <div style="display:flex;gap:10px"><span style="color:#a89e89;width:54px;flex-shrink:0">When</span><span>{{ place.era }}</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fffefa;border:1px solid #e6ddca;border-radius:18px;padding:20px;margin-top:18px">
+            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#a89e89;font-weight:700;margin-bottom:12px">People connected here</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ place.people }}" as="r" hint-placeholder-count="3">
+                <button onClick="{{ r.open }}" style="display:flex;align-items:center;gap:10px;background:#f6f1e6;border:1px solid #e6ddca;border-radius:12px;padding:7px 12px 7px 7px;cursor:pointer;text-align:left;width:100%" style-hover="border-color:{{ accent }}">
+                  <span style="width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:12px;color:#f4eee2;background:{{ r.tint }}">{{ r.initials }}</span>
+                  <span style="min-width:0;line-height:1.25"><span style="display:block;font-size:13.5px;color:#22302b">{{ r.name }}</span><span style="display:block;font-size:11px;color:#a89e89">{{ r.role }}</span></span>
+                </button>
+              </sc-for>
+              <sc-if value="{{ place.noPeople }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#a89e89">No one tagged here yet.</div></sc-if>
+            </div>
+          </div>
+        </div>
+        <div>
+          <sc-if value="{{ place.hasStory }}" hint-placeholder-val="{{ true }}">
+            <p style="font-family:'Spectral',serif;font-size:20px;line-height:1.5;color:#3a3a31;margin-bottom:34px;text-wrap:pretty">{{ place.story }}</p>
+          </sc-if>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+            <h2 style="font-family:'Spectral',serif;font-size:21px;font-weight:500">Photos</h2>
+            <div style="flex:1;height:1px;background:#e6ddca"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <sc-if value="{{ place.hasAlbumPhotos }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ place.albumPhotos }}" as="ph" hint-placeholder-count="3">
+                <div style="aspect-ratio:1;border-radius:10px;background:repeating-linear-gradient(135deg,#efe7d6 0 10px,#e9e0cc 10px 20px);display:flex;align-items:flex-end"><span style="font-size:10px;color:#5a5446;background:rgba(255,254,250,.9);padding:4px 7px;border-radius:6px;margin:6px;line-height:1.25">{{ ph.caption }}</span></div>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ place.noAlbumPhotos }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ place.photoCells }}" as="c" hint-placeholder-count="5">
+                <div style="aspect-ratio:1;border-radius:10px;background:repeating-linear-gradient(135deg,#efe7d6 0 10px,#e9e0cc 10px 20px)"></div>
+              </sc-for>
+            </sc-if>
+            <div onClick="{{ place.addPhoto }}" style="aspect-ratio:1;border-radius:10px;border:1.5px dashed #cfc4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#9a8f78;cursor:pointer" style-hover="border-color:{{ accent }};color:{{ accent }}"><span style="font-size:22px;line-height:1">＋</span><span style="font-size:11px">Add</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+  </main>
+
+  <!-- ============ ADD / EDIT MODAL ============ -->
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(20,36,29,.55);display:flex;align-items:flex-start;justify-content:center;padding:64px 20px;overflow-y:auto">
+    <div onClick="{{ stop }}" style="width:540px;max-width:100%;background:#fffefa;border-radius:18px;overflow:hidden;animation:mpop .28s cubic-bezier(.2,.7,.3,1);box-shadow:0 30px 70px -20px rgba(20,36,29,.6)">
+      <div style="padding:22px 26px;background:#14241d;color:#efe7d4;display:flex;align-items:center;justify-content:between;gap:16px">
+        <div style="flex:1">
+          <h2 style="font-family:'Spectral',serif;font-size:23px;font-weight:500">{{ modalTitle }}</h2>
+          <p style="font-size:12.5px;color:#9aa89a;margin-top:2px">Only a name is required — fill in the rest whenever you like.</p>
+        </div>
+        <button onClick="{{ closeModal }}" style="background:rgba(255,255,255,.1);border:none;color:#efe7d4;width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;flex-shrink:0">✕</button>
+      </div>
+      <div style="padding:26px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">First name *</span>
+            <input value="{{ form.first }}" onInput="{{ onFirst }}" placeholder="Eleanor" style="margin-top:6px;width:100%;border:1.5px solid {{ firstBorder }};border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+          </label>
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Last name</span>
+            <input value="{{ form.last }}" onInput="{{ onLast }}" placeholder="Whitfield" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+          </label>
+        </div>
+        <sc-if value="{{ firstError }}" hint-placeholder-val="{{ false }}"><div style="color:#a4503a;font-size:12.5px;margin-top:7px">Please enter a first name.</div></sc-if>
+
+        <sc-if value="{{ showRel }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:18px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">How are they related?</span>
+          <div style="display:flex;gap:8px;margin-top:7px">
+            <sc-for list="{{ relTabs }}" as="rt" hint-placeholder-count="3">
+              <button onClick="{{ rt.pick }}" style="flex:1;padding:10px 8px;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer;background:{{ rt.bg }};color:{{ rt.fg }};border:1.5px solid {{ rt.border }}">{{ rt.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <label style="display:block;margin-top:14px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">{{ relToLabel }}</span>
+          <select value="{{ form.relTo }}" onChange="{{ onRelTo }}" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+            <sc-for list="{{ relOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+          </select>
+        </label>
+        <sc-if value="{{ showSpouseExtra }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:1.2fr .9fr .9fr;gap:14px;margin-top:14px">
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Status</span>
+            <select value="{{ form.pstatus }}" onChange="{{ onPStatus }}" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+              <option value="married">Married</option>
+              <option value="partner">Partner</option>
+              <option value="divorced">Divorced</option>
+              <option value="widowed">Widowed</option>
+              <option value="separated">Separated</option>
+            </select>
+          </label>
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">From</span>
+            <input value="{{ form.pfrom }}" onInput="{{ onPFrom }}" placeholder="1985" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+          </label>
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">To</span>
+            <input value="{{ form.pto }}" onInput="{{ onPTo }}" placeholder="— present" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+          </label>
+        </div>
+        </sc-if>
+        </sc-if>
+
+        <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:14px;margin-top:16px">
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Born</span>
+            <input value="{{ form.born }}" onInput="{{ onBorn }}" placeholder="1931" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+          </label>
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Birthplace</span>
+            <input value="{{ form.place }}" onInput="{{ onPlace }}" placeholder="Savannah, GA" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+          </label>
+        </div>
+
+        <div style="margin-top:16px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Family branch</span>
+          <p style="font-size:11.5px;color:#a89e89;margin-top:2px">Colour-codes them in the family tree.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px">
+            <sc-for list="{{ personBranchChoices }}" as="b" hint-placeholder-count="4">
+              <button onClick="{{ b.pick }}" style="display:flex;align-items:center;gap:8px;border-radius:999px;padding:6px 13px 6px 9px;cursor:pointer;font-size:13px;font-weight:600;background:{{ b.bg }};color:{{ b.fg }};border:1.5px solid {{ b.border }}">
+                <span style="width:13px;height:13px;border-radius:50%;flex-shrink:0;background:{{ b.color }};box-shadow:{{ b.ring }}"></span>{{ b.label }}
+              </button>
+            </sc-for>
+          </div>
+        </div>
+
+        <label style="display:block;margin-top:16px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">A short story or note</span>
+          <textarea value="{{ form.story }}" onInput="{{ onStory }}" placeholder="Anything you remember — a saying, a place, a moment…" rows="3" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5;resize:vertical;line-height:1.5"></textarea>
+        </label>
+
+        <div style="margin-top:16px;border:1.5px dashed #cfc4ac;border-radius:12px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#9a8f78;cursor:pointer" style-hover="border-color:{{ accent }};color:{{ accent }}">
+          <span style="font-size:24px;line-height:1">⤓</span>
+          <span style="font-size:13px;font-weight:600">Drop a photo here, or click to upload</span>
+          <span style="font-size:11.5px;color:#b3a78c">JPG or PNG · optional</span>
+        </div>
+      </div>
+      <div style="padding:18px 26px;background:#f6f1e6;border-top:1px solid #e6ddca;display:flex;justify-content:flex-end;gap:12px">
+        <button onClick="{{ closeModal }}" style="background:none;border:1.5px solid #d8cdb6;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:600;color:#5a5446;cursor:pointer" style-hover="background:#ece3d2">Cancel</button>
+        <button onClick="{{ submit }}" style="background:{{ accent }};border:none;border-radius:9px;padding:11px 24px;font-size:14px;font-weight:700;color:#1a130a;cursor:pointer" style-hover="filter:brightness(1.07)">{{ saveLabel }}</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ ADD PHOTO MODAL ============ -->
+  <sc-if value="{{ photoModalOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closePhotoModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(20,36,29,.55);display:flex;align-items:flex-start;justify-content:center;padding:56px 20px;overflow-y:auto">
+    <div onClick="{{ stop }}" style="width:520px;max-width:100%;background:#fffefa;border-radius:18px;overflow:hidden;animation:mpop .28s cubic-bezier(.2,.7,.3,1);box-shadow:0 30px 70px -20px rgba(20,36,29,.6)">
+      <div style="padding:22px 26px;background:#14241d;color:#efe7d4;display:flex;align-items:center;gap:16px">
+        <div style="flex:1">
+          <h2 style="font-family:'Spectral',serif;font-size:23px;font-weight:500">Add a photo</h2>
+          <p style="font-size:12.5px;color:#9aa89a;margin-top:2px">Tag a person or a place so it shows up on their page — both optional.</p>
+        </div>
+        <button onClick="{{ closePhotoModal }}" style="background:rgba(255,255,255,.1);border:none;color:#efe7d4;width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;flex-shrink:0">✕</button>
+      </div>
+      <div style="padding:26px">
+        <div style="border:1.5px dashed #cfc4ac;border-radius:12px;padding:34px 22px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#9a8f78;cursor:pointer" style-hover="border-color:{{ accent }};color:{{ accent }}">
+          <span style="font-size:28px;line-height:1">⤓</span>
+          <span style="font-size:13.5px;font-weight:600">Drop a photo here, or click to upload</span>
+          <span style="font-size:11.5px;color:#b3a78c">JPG or PNG</span>
+        </div>
+        <label style="display:block;margin-top:18px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Caption</span>
+          <input value="{{ photoForm.caption }}" onInput="{{ onPhCaption }}" placeholder="Sunday lunch on the porch…" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+        </label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px">
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Tag a person</span>
+            <select value="{{ photoForm.person }}" onChange="{{ onPhPerson }}" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+              <option value="">No one in particular</option>
+              <sc-for list="{{ photoPersonOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+            </select>
+          </label>
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Tag a place</span>
+            <select value="{{ photoForm.place }}" onChange="{{ onPhPlace }}" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+              <option value="">Nowhere in particular</option>
+              <sc-for list="{{ photoPlaceOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <div style="margin-top:16px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Family branch</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px">
+            <sc-for list="{{ photoBranchChoices }}" as="b" hint-placeholder-count="4">
+              <button onClick="{{ b.pick }}" style="display:flex;align-items:center;gap:8px;border-radius:999px;padding:6px 13px 6px 9px;cursor:pointer;font-size:13px;font-weight:600;background:{{ b.bg }};color:{{ b.fg }};border:1.5px solid {{ b.border }}">
+                <span style="width:13px;height:13px;border-radius:50%;flex-shrink:0;background:{{ b.color }};box-shadow:{{ b.ring }}"></span>{{ b.label }}
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="padding:18px 26px;background:#f6f1e6;border-top:1px solid #e6ddca;display:flex;justify-content:flex-end;gap:12px">
+        <button onClick="{{ closePhotoModal }}" style="background:none;border:1.5px solid #d8cdb6;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:600;color:#5a5446;cursor:pointer" style-hover="background:#ece3d2">Cancel</button>
+        <button onClick="{{ submitPhoto }}" style="background:{{ accent }};border:none;border-radius:9px;padding:11px 24px;font-size:14px;font-weight:700;color:#1a130a;cursor:pointer" style-hover="filter:brightness(1.07)">Add photo</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ ADD PLACE MODAL ============ -->
+  <sc-if value="{{ placeModalOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closePlaceModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(20,36,29,.55);display:flex;align-items:flex-start;justify-content:center;padding:48px 20px;overflow-y:auto">
+    <div onClick="{{ stop }}" style="width:580px;max-width:100%;background:#fffefa;border-radius:18px;overflow:hidden;animation:mpop .28s cubic-bezier(.2,.7,.3,1);box-shadow:0 30px 70px -20px rgba(20,36,29,.6)">
+      <div style="padding:22px 26px;background:#14241d;color:#efe7d4;display:flex;align-items:center;gap:16px">
+        <div style="flex:1">
+          <h2 style="font-family:'Spectral',serif;font-size:23px;font-weight:500">Add a place</h2>
+          <p style="font-size:12.5px;color:#9aa89a;margin-top:2px">A home, a room, a town — anywhere the family’s story happened.</p>
+        </div>
+        <button onClick="{{ closePlaceModal }}" style="background:rgba(255,255,255,.1);border:none;color:#efe7d4;width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;flex-shrink:0">✕</button>
+      </div>
+      <div style="padding:26px">
+        <label style="display:block">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Name *</span>
+          <input value="{{ placeForm.name }}" onInput="{{ onPName }}" placeholder="The House on Jones Street" style="margin-top:6px;width:100%;border:1.5px solid {{ placeNameBorder }};border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+        </label>
+        <sc-if value="{{ placeNameError }}" hint-placeholder-val="{{ false }}"><div style="color:#a4503a;font-size:12.5px;margin-top:7px">Please give the place a name.</div></sc-if>
+        <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:14px;margin-top:16px">
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Type</span>
+            <select value="{{ placeForm.type }}" onChange="{{ onPType }}" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+              <sc-for list="{{ placeTypeOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o }}">{{ o }}</option></sc-for>
+            </select>
+          </label>
+          <label style="display:block">
+            <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Location</span>
+            <input value="{{ placeForm.location }}" onInput="{{ onPLoc }}" placeholder="Savannah, GA" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+          </label>
+        </div>
+        <label style="display:block;margin-top:16px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Years</span>
+          <input value="{{ placeForm.era }}" onInput="{{ onPEra }}" placeholder="1953 – 2019" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5">
+        </label>
+        <label style="display:block;margin-top:16px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Description</span>
+          <textarea value="{{ placeForm.blurb }}" onInput="{{ onPBlurb }}" placeholder="What happened here — who lived it, what it meant…" rows="3" style="margin-top:6px;width:100%;border:1.5px solid #e0d6c0;border-radius:9px;padding:11px 13px;font-size:14px;outline:none;background:#fdfbf5;resize:vertical;line-height:1.5"></textarea>
+        </label>
+        <div style="margin-top:18px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Family branch</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px">
+            <sc-for list="{{ placeBranchChoices }}" as="b" hint-placeholder-count="4">
+              <button onClick="{{ b.pick }}" style="display:flex;align-items:center;gap:8px;border-radius:999px;padding:6px 13px 6px 9px;cursor:pointer;font-size:13px;font-weight:600;background:{{ b.bg }};color:{{ b.fg }};border:1.5px solid {{ b.border }}">
+                <span style="width:13px;height:13px;border-radius:50%;flex-shrink:0;background:{{ b.color }};box-shadow:{{ b.ring }}"></span>{{ b.label }}
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top:18px">
+          <span style="font-size:12px;font-weight:700;color:#5a5446;letter-spacing:.3px">Tag the people connected here</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px">
+            <sc-for list="{{ peopleToggles }}" as="pt" hint-placeholder-count="8">
+              <button onClick="{{ pt.toggle }}" style="display:flex;align-items:center;gap:8px;border-radius:999px;padding:5px 13px 5px 5px;cursor:pointer;font-size:13px;background:{{ pt.bg }};color:{{ pt.fg }};border:1.5px solid {{ pt.border }}">
+                <span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:11px;color:#f4eee2;background:{{ pt.tint }}">{{ pt.initials }}</span>{{ pt.first }}
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top:18px;border:1.5px dashed #cfc4ac;border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#9a8f78;cursor:pointer" style-hover="border-color:{{ accent }};color:{{ accent }}">
+          <span style="font-size:24px;line-height:1">⤓</span>
+          <span style="font-size:13px;font-weight:600">Drop a photo here, or click to upload</span>
+          <span style="font-size:11.5px;color:#b3a78c">JPG or PNG · optional</span>
+        </div>
+      </div>
+      <div style="padding:18px 26px;background:#f6f1e6;border-top:1px solid #e6ddca;display:flex;justify-content:flex-end;gap:12px">
+        <button onClick="{{ closePlaceModal }}" style="background:none;border:1.5px solid #d8cdb6;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:600;color:#5a5446;cursor:pointer" style-hover="background:#ece3d2">Cancel</button>
+        <button onClick="{{ submitPlace }}" style="background:{{ accent }};border:none;border-radius:9px;padding:11px 24px;font-size:14px;font-weight:700;color:#1a130a;cursor:pointer" style-hover="filter:brightness(1.07)">Add place</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#b88a3e&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#b88a3e&quot;,&quot;#3f6f5e&quot;,&quot;#8a4f43&quot;,&quot;#5a6b86&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;pageTone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;cream&quot;,&quot;options&quot;:[&quot;cream&quot;,&quot;linen&quot;,&quot;mist&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;showPrompts&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Home&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const P = {
+      eleanor:{first:'Eleanor',last:'Whitfield',maiden:'Hart',born:'1931',died:'2019',place:'Savannah, GA',role:'Grandmother',initials:'EW',tint:'#8a6f4b',
+        bio:'Eleanor ran the family with flour on her hands and a list in her head. Her blue-tiled kitchen was the centre of everything for nearly fifty years.',
+        parents:[],partners:[{id:'james',status:'widowed',from:'1953',to:'2011'}],children:['margaret','robert'],photos:7,
+        events:[
+          {year:'1949',title:'Graduated from Savannah High',detail:'First in her family to finish school.'},
+          {year:'1953',title:'Married James Whitfield',detail:'A small ceremony at Christ Church.',hasPhoto:true},
+          {year:'1972',title:'Opened Hart\u2019s Bakery',detail:'The blue-tiled kitchen that fed the whole neighbourhood.',hasPhoto:true}
+        ],
+        stories:[
+          {title:'The blue kitchen',author:'Margaret',excerpt:'Every surface was dusted in flour by six in the morning. You learned to bake just by standing near her.',hasPhoto:true},
+          {title:'Sunday bread',author:'Sarah',excerpt:'She never wrote the recipe down. \u201cYour hands will remember,\u201d she said \u2014 and somehow they do.',hasPhoto:false}
+        ]},
+      james:{first:'James',last:'Whitfield',born:'1928',died:'2011',place:'Macon, GA',role:'Grandfather',initials:'JW',tint:'#5b6e63',
+        bio:'A railway man and a quiet one, James kept the family\u2019s letters, deeds and photographs in a cedar box he built himself.',
+        parents:[],partners:[{id:'ruth',status:'widowed',from:'1950',to:'1952'},{id:'eleanor',status:'married',from:'1953',to:'2011'}],children:['margaret','robert'],photos:4,
+        events:[{year:'1951',title:'Joined the Central of Georgia Railway',detail:'Worked the same line for 34 years.'}],
+        stories:[{title:'The cedar box',author:'Robert',excerpt:'Everything we know about the family before 1950 came out of that box. He labelled every photograph in pencil.',hasPhoto:true}]},
+      margaret:{first:'Margaret',last:'Cole',maiden:'Whitfield',born:'1955',place:'Savannah, GA',role:'Daughter',initials:'MC',tint:'#6a6f86',
+        bio:'The family\u2019s keeper of dates and birthdays. If you forget an anniversary, Margaret will not.',
+        parents:['eleanor','james'],partners:[{id:'carl',status:'divorced',from:'1976',to:'1982'},{id:'tom',status:'married',from:'1985'}],children:['sarah'],photos:5,events:[],
+        stories:[{title:'Every birthday, on time',author:'Sarah',excerpt:'Mum has sent a hand-written card on the right day, every year, to everyone. We\u2019ve never understood how.',hasPhoto:false}]},
+      tom:{first:'Tom',last:'Cole',born:'1953',place:'Atlanta, GA',role:'Son-in-law',initials:'TC',tint:'#7d6a6a',
+        bio:'Married into the family in 1981 and has been fixing things around the house ever since.',
+        parents:[],partners:[{id:'margaret',status:'married',from:'1985'}],children:['sarah'],photos:2,events:[],stories:[]},
+      robert:{first:'Robert',last:'Whitfield',born:'1958',place:'Savannah, GA',role:'Son',initials:'RW',tint:'#6e7a5a',
+        bio:'Inherited his father\u2019s cedar box and his mother\u2019s stubbornness. Started this archive to keep it all in one place.',
+        parents:['eleanor','james'],partners:[{id:'lucia',status:'married',from:'1986'}],children:['daniel'],photos:3,events:[],stories:[]},
+      lucia:{first:'Luc\u00eda',last:'Whitfield',maiden:'Reyes',born:'1961',place:'San Juan, PR',role:'Daughter-in-law',initials:'LW',tint:'#866a78',
+        bio:'Brought a second language and a thousand recipes into the family.',
+        parents:[],partners:[{id:'robert',status:'married',from:'1986'}],children:['daniel'],photos:4,events:[],stories:[]},
+      sarah:{first:'Sarah',last:'Cole',born:'1984',place:'Savannah, GA',role:'Granddaughter',initials:'SC',tint:'#5b6e63',
+        bio:'Photographer. The reason most of the recent pictures exist at all.',
+        parents:['margaret','tom'],partners:[],children:[],photos:9,events:[],stories:[]},
+      daniel:{first:'Daniel',last:'Whitfield',born:'1989',role:'Grandson',initials:'DW',tint:'#8a6f4b',
+        bio:'The youngest of the line so far. Still arguing that the archive needs a phone app.',
+        parents:['robert','lucia'],partners:[],children:[],photos:1,events:[],stories:[]},
+      ruth:{first:'Ruth',last:'Whitfield',maiden:'Bellamy',born:'1929',died:'1952',place:'Macon, GA',role:'First wife of James',initials:'RB',tint:'#6a6f86',
+        bio:'James\u2019s first wife. They married young; she died of fever two years later, before the family we know today began.',
+        parents:[],partners:[{id:'james',status:'widowed',from:'1950',to:'1952'}],children:[],photos:1,events:[],stories:[]},
+      carl:{first:'Carl',last:'Reed',born:'1952',place:'Atlanta, GA',role:'Margaret\u2019s first husband',initials:'CR',tint:'#6e7a5a',
+        bio:'Margaret\u2019s first husband. They divorced in 1982 but stay on warm terms at family weddings.',
+        parents:[],partners:[{id:'margaret',status:'divorced',from:'1976',to:'1982'}],children:[],photos:0,events:[],stories:[]}
+    };
+    const PL = {
+      bakery:{id:'bakery',name:'Hart\u2019s Bakery',type:'Business',location:'Savannah, GA',era:'1972 \u2013 2003',photos:5,
+        blurb:'Eleanor\u2019s blue-tiled bakery on Abercorn Street.',
+        story:'For thirty-one years the bakery opened before dawn. Eleanor ran it with Margaret on the register and, later, Sarah behind the camera. The blue tiles came from a shop that closed the same year it opened.',
+        people:['eleanor','margaret','sarah']},
+      jones:{id:'jones',name:'The House on Jones Street',type:'Home',location:'Savannah, GA',era:'1953 \u2013 2019',photos:8,
+        blurb:'The family home for three generations.',
+        story:'James and Eleanor bought the house the year they married. Both children grew up here, and Eleanor lived in it until the end. The cedar box lived in the hall closet.',
+        people:['eleanor','james','margaret','robert']},
+      church:{id:'church',name:'Christ Church',type:'Church',location:'Savannah, GA',era:'1953',photos:2,
+        blurb:'Where Eleanor and James were married.',
+        story:'A small ceremony on a Saturday morning in spring, with more family than the pews could hold.',
+        people:['eleanor','james']},
+      farm:{id:'farm',name:'The Macon Farm',type:'Farm',location:'Macon, GA',era:'1928 \u2013 1951',photos:3,
+        blurb:'Where James grew up, and married Ruth.',
+        story:'Three hundred acres of pecan and peach. James left for the railway in 1951; the farm was sold a few years later.',
+        people:['james','ruth']},
+      sanjuan:{id:'sanjuan',name:'Calle Luna, San Juan',type:'Home',location:'San Juan, PR',era:'1961 \u2013 1985',photos:4,
+        blurb:'Luc\u00eda\u2019s childhood home in Old San Juan.',
+        story:'Luc\u00eda grew up above her family\u2019s shop. The recipes she brought into the family were all born in this kitchen.',
+        people:['lucia']},
+      cabin:{id:'cabin',name:'The Lake Cabin',type:'Gathering place',location:'Lake Burton, GA',era:'1990 \u2013 today',photos:9,
+        blurb:'Where the family still gathers every summer.',
+        story:'Robert bought the cabin in 1990. Every reunion photograph since has been taken on its front porch.',
+        people:['robert','lucia','daniel','margaret','tom','sarah']}
+    };
+    const branchMembers={founders:['eleanor','james','ruth'],cole:['margaret','tom','sarah','carl'],robert:['robert','lucia','daniel']};
+    Object.keys(branchMembers).forEach(bid=>branchMembers[bid].forEach(pid=>{ if(P[pid]) P[pid].branch=bid; }));
+    const plBranch={bakery:'founders',jones:'founders',church:'founders',farm:'founders',sanjuan:'robert',cabin:'robert'};
+    Object.keys(plBranch).forEach(id=>{ if(PL[id]) PL[id].branch=plBranch[id]; });
+    this.state = {
+      screen:'home', selected:'eleanor', modalOpen:false, editingId:null,
+      treeZoom:1, treeNatW:1624, treeNatH:620,
+      branches:{
+        founders:{id:'founders',label:'Founders',color:'#a9763f'},
+        cole:{id:'cole',label:'Cole line',color:'#5a6b86'},
+        robert:{id:'robert',label:'Whitfield line',color:'#5b7a5e'}
+      },
+      branchOrder:['founders','cole','robert'],
+      form:{first:'',last:'',rel:'child',relTo:'eleanor',born:'',place:'',story:'',pstatus:'married',pfrom:'',pto:'',branch:''},
+      firstError:false,
+      order:['eleanor','james','margaret','robert','tom','lucia','sarah','daniel','ruth','carl'],
+      people:P,
+      places:PL, placesOrder:['bakery','jones','church','farm','sanjuan','cabin'],
+      selectedPlace:'jones', placeModalOpen:false, placeNameError:false,
+      placeForm:{name:'',type:'Home',location:'',era:'',blurb:'',people:[],branch:''},
+      photoModalOpen:false, photoForm:{caption:'',person:'',place:'',branch:''},
+      album:[
+        {id:'a1',caption:'Eleanor & James, 1953',h:'220px',person:'eleanor',place:'church'},
+        {id:'a2',caption:'The bakery, opening day',h:'150px',person:null,place:'bakery'},
+        {id:'a3',caption:'Margaret\u2019s wedding',h:'180px',person:'margaret',place:'church'},
+        {id:'a4',caption:'Sunday lunch, 1991',h:'240px',person:null,place:'jones'},
+        {id:'a5',caption:'Robert & Daniel',h:'160px',person:'robert',place:'cabin'},
+        {id:'a6',caption:'Reunion, 2008',h:'200px',person:null,place:'cabin'},
+        {id:'a7',caption:'Sarah\u2019s first camera',h:'150px',person:'sarah',place:null},
+        {id:'a8',caption:'The cedar box',h:'190px',person:'james',place:'jones'},
+        {id:'a9',caption:'Holidays, 1998',h:'170px',person:null,place:'jones'},
+        {id:'a10',caption:'Luc\u00eda\u2019s kitchen',h:'220px',person:'lucia',place:'sanjuan'},
+        {id:'a11',caption:'Four generations, 2015',h:'150px',person:null,place:'cabin'},
+        {id:'a12',caption:'Front porch',h:'200px',person:null,place:'cabin'}
+      ],
+      activity:[
+        {ini:'SC',tint:'#5b6e63',text:'Sarah added 3 photos to Eleanor',time:'2 days ago'},
+        {ini:'RW',tint:'#6e7a5a',text:'Robert wrote a story on James',time:'5 days ago'},
+        {ini:'MC',tint:'#6a6f86',text:'Margaret updated Lucía\u2019s birthplace',time:'1 week ago'},
+        {ini:'DW',tint:'#8a6f4b',text:'Daniel joined the archive',time:'2 weeks ago'}
+      ],
+      prompts:[
+        {text:'Add a photo of James',target:'james'},
+        {text:'Daniel is missing a birthplace',target:'daniel',edit:true},
+        {text:'Tell a story about Tom',target:'tom'}
+      ]
+    };
+    this.tints=['#5b6e63','#8a6f4b','#6a6f86','#7d6a6a','#6e7a5a','#866a78'];
+  }
+
+  setScroll = (el)=>{ this._sc = el; };
+  toTop(){ if(this._sc) this._sc.scrollTop = 0; }
+
+  setTreeInner = (el)=>{
+    this._treeInner = el;
+    if(el){
+      if(this._treeRO) this._treeRO.disconnect();
+      this._treeRO = new ResizeObserver(()=>this.measureTree());
+      this._treeRO.observe(el);
+      this.measureTree();
+    }
+  };
+  measureTree(){
+    const el=this._treeInner; if(!el) return;
+    const w=el.offsetWidth, h=el.offsetHeight;
+    if(w && h && (w!==this.state.treeNatW || h!==this.state.treeNatH)) this.setState({treeNatW:w,treeNatH:h});
+  }
+  setTreeScroll = (el)=>{
+    if(this._treeScroll && this._wheelH) this._treeScroll.removeEventListener('wheel', this._wheelH);
+    this._treeScroll = el;
+    if(el){
+      this._wheelH = (e)=>{ if(e.ctrlKey||e.metaKey){ e.preventDefault(); this.zoomBy(e.deltaY>0?-0.08:0.08); } };
+      el.addEventListener('wheel', this._wheelH, {passive:false});
+    }
+  };
+  zoomBy(d){ this.setState(s=>({treeZoom: Math.min(2, Math.max(0.4, Math.round((s.treeZoom+d)*100)/100))})); }
+  zoomReset=()=>this.setState({treeZoom:1});
+  zoomIn=()=>this.zoomBy(0.2);
+  zoomOut=()=>this.zoomBy(-0.2);
+
+  life(p){
+    if(p.born && p.died) return p.born+' \u2013 '+p.died;
+    if(p.born) return 'b. '+p.born;
+    if(p.died) return 'd. '+p.died;
+    return 'Dates unknown';
+  }
+  mix(hex, baseHex, t){
+    const h=x=>[parseInt(x.slice(1,3),16),parseInt(x.slice(3,5),16),parseInt(x.slice(5,7),16)];
+    const a=h(hex), b=h(baseHex);
+    const c=i=>Math.round(a[i]*t+b[i]*(1-t)).toString(16).padStart(2,'0');
+    return '#'+c(0)+c(1)+c(2);
+  }
+  branchOf(id){ const p=this.state.people[id]; return p&&p.branch?p.branch:null; }
+  branchColor(bid){ const b=this.state.branches[bid]; return b?b.color:null; }
+  node(id){
+    const p=this.state.people[id]; if(!p) return null;
+    const bid=p.branch||null, bcol=bid?this.branchColor(bid):null;
+    const bname=bid&&this.state.branches[bid]?this.state.branches[bid].label:'';
+    return {id, name:p.first+' '+p.last, first:p.first, role:p.role, dates:this.life(p),
+      initials:p.initials, tint:p.tint, open:()=>this.openPerson(id),
+      branch:bid, branchColor:bcol||'#e6ddca', hasBranch:!!bcol, branchLabel:bname,
+      cardBg:bcol?this.mix(bcol,'#fffefa',0.09):'#fffefa'};
+  }
+  unionInfo(anchorId, partnerId, accent){
+    const rec=((this.state.people[anchorId]||{}).partners||[]).find(x=>x.id===partnerId)||{status:'married'};
+    const colors={married:accent,partner:accent,widowed:'#8a8270',divorced:'#a4604a',separated:'#a4604a'};
+    const labels={married:'Married',partner:'Partner',widowed:'Widowed',divorced:'Divorced',separated:'Separated'};
+    const c=colors[rec.status]||'#8a8270';
+    const dashed=['divorced','widowed','separated'].indexOf(rec.status)>=0;
+    const yrs=rec.from&&rec.to?(rec.from+'\u2013'+rec.to):rec.from?('since '+rec.from):'';
+    return {statusLabel:labels[rec.status]||rec.status, statusColor:c, years:yrs, lineCss:'2px '+(dashed?'dashed':'solid')+' '+c, glyph:'\u2665'};
+  }
+  timeline(p){
+    const ev=[];
+    if(p.born) ev.push({year:p.born,title:'Born',detail:p.place?('Born in '+p.place):''});
+    (p.events||[]).forEach(e=>ev.push(e));
+    if(p.died) ev.push({year:p.died,title:'Passed away',detail:''});
+    ev.sort((a,b)=>(parseInt(a.year)||0)-(parseInt(b.year)||0));
+    return ev.map(e=>({year:e.year,title:e.title,detail:e.detail||'',hasDetail:!!(e.detail&&e.detail.length),hasPhoto:!!e.hasPhoto}));
+  }
+
+  openPerson(id){ this.setState({screen:'profile',selected:id}); this.toTop(); }
+  goHome=()=>{ this.setState({screen:'home'}); this.toTop(); }
+  goTree=()=>{ this.setState({screen:'tree'}); this.toTop(); }
+  goPhotos=()=>{ this.setState({screen:'photos'}); this.toTop(); }
+
+  openAdd=()=>{ this.setState({modalOpen:true,editingId:null,firstError:false,
+    form:{first:'',last:'',rel:'child',relTo:this.state.selected||'eleanor',born:'',place:'',story:'',pstatus:'married',pfrom:'',pto:'',branch:(this.branchOf(this.state.selected)||'')}}); }
+  editPerson=()=>{ const p=this.state.people[this.state.selected];
+    this.setState({modalOpen:true,editingId:this.state.selected,firstError:false,
+      form:{first:p.first,last:p.last,rel:'child',relTo:'eleanor',born:p.born||'',place:p.place||'',story:'',branch:p.branch||''}}); }
+  promptOpen(g){ if(g.edit){ this.setState({selected:g.target}); this.editPersonFor(g.target); } else { this.openPerson(g.target); } }
+  editPersonFor(id){ const p=this.state.people[id];
+    this.setState({modalOpen:true,editingId:id,selected:id,firstError:false,
+      form:{first:p.first,last:p.last,rel:'child',relTo:'eleanor',born:p.born||'',place:p.place||'',story:'',branch:p.branch||''}}); }
+  closeModal=()=>this.setState({modalOpen:false});
+  stop=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); };
+
+  typeColor(t){ const m={Home:'#5b6e63',Business:'#8a6f4b',Church:'#6a6f86',Farm:'#6e7a5a','Gathering place':'#866a78','Resting place':'#7d6a6a'}; return m[t]||'#8a8270'; }
+  placeDisp(id){
+    const pl=this.state.places[id]; if(!pl) return null;
+    const people=(pl.people||[]).map(i=>this.node(i)).filter(Boolean);
+    const albumPhotos=(this.state.album||[]).filter(ph=>ph.place===id).map(ph=>({id:ph.id,caption:ph.caption}));
+    return {id, name:pl.name, type:pl.type, typeColor:this.typeColor(pl.type), location:pl.location, era:pl.era,
+      branch:pl.branch||'', branchColor:pl.branch?this.branchColor(pl.branch):'#cfc4ac', hasBranch:!!pl.branch,
+      branchLabel:pl.branch&&this.state.branches[pl.branch]?this.state.branches[pl.branch].label:'',
+      blurb:pl.blurb||'', story:pl.story||'', hasStory:!!pl.story,
+      albumPhotos, hasAlbumPhotos:albumPhotos.length>0, noAlbumPhotos:albumPhotos.length===0,
+      photos:pl.photos||0, photoCells:Array.from({length:Math.min(pl.photos||0,8)}),
+      people, peopleShown:people.slice(0,4), hasMore:people.length>4, moreCount:Math.max(0,people.length-4), noPeople:people.length===0,
+      open:()=>this.openPlace(id), addPhoto:()=>this.openAddPhoto({place:id})};
+  }
+  goPlaces=()=>{ this.setState({screen:'places'}); this.toTop(); }
+  openPlace(id){ this.setState({screen:'place',selectedPlace:id}); this.toTop(); }
+  openAddPlace=()=>{ this.setState({placeModalOpen:true,placeNameError:false,placeForm:{name:'',type:'Home',location:'',era:'',blurb:'',people:[],branch:''}}); }
+  closePlaceModal=()=>this.setState({placeModalOpen:false});
+  openAddPhoto=(opts)=>{ const o=opts||{}; const br=o.person?(this.branchOf(o.person)||''):(o.place&&this.state.places[o.place]?(this.state.places[o.place].branch||''):''); this.setState({photoModalOpen:true,photoForm:{caption:'',person:o.person||'',place:o.place||'',branch:br}}); }
+  closePhotoModal=()=>this.setState({photoModalOpen:false});
+  setPhF(k){ return (e)=>{ const v=e.target.value; this.setState(s=>({photoForm:{...s.photoForm,[k]:v}})); }; }
+  submitPhoto=()=>{
+    const f=this.state.photoForm;
+    const id='ph_'+Math.random().toString(36).slice(2,7);
+    const heights=['160px','200px','180px','230px','150px'];
+    const photo={id,caption:f.caption.trim()||'Untitled photo',h:heights[this.state.album.length%heights.length],person:f.person||null,place:f.place||null,branch:f.branch||''};
+    const album=[photo,...this.state.album];
+    let where=[]; if(f.person&&this.state.people[f.person]) where.push(this.state.people[f.person].first); if(f.place&&this.state.places[f.place]) where.push(this.state.places[f.place].name);
+    const txt='You added a photo'+(where.length?' · '+where.join(', '):'');
+    const activity=[{ini:'Y',tint:'#5b6e63',text:txt,time:'just now'},...this.state.activity];
+    this.setState({album,activity,photoModalOpen:false});
+  }
+  setPF(k){ return (e)=>{ const v=e.target.value; this.setState(s=>({placeForm:{...s.placeForm,[k]:v}, placeNameError:k==='name'?false:s.placeNameError})); }; }
+  togglePlacePerson(id){ this.setState(s=>{ const has=s.placeForm.people.indexOf(id)>=0; return {placeForm:{...s.placeForm,people: has? s.placeForm.people.filter(x=>x!==id) : [...s.placeForm.people,id]}}; }); }
+  submitPlace=()=>{
+    const f=this.state.placeForm;
+    if(!f.name.trim()){ this.setState({placeNameError:true}); return; }
+    const id='pl_'+Math.random().toString(36).slice(2,7);
+    const place={id,name:f.name.trim(),type:f.type||'Home',location:f.location.trim(),era:f.era.trim(),blurb:f.blurb.trim(),story:f.blurb.trim(),photos:0,people:[...f.people],branch:f.branch||''};
+    const places={...this.state.places,[id]:place};
+    const placesOrder=[...this.state.placesOrder,id];
+    const activity=[{ini:'Y',tint:'#5b6e63',text:'You added the place \u201c'+place.name+'\u201d',time:'just now'},...this.state.activity];
+    this.setState({places,placesOrder,activity,placeModalOpen:false,screen:'place',selectedPlace:id});
+    this.toTop();
+  }
+
+  setF(k){ return (e)=>{ const v=e.target.value; this.setState(s=>({form:{...s.form,[k]:v},firstError:k==='first'?false:s.firstError})); }; }
+
+  branchChoices(selected, onPick){
+    const list=this.state.branchOrder.map(id=>{
+      const b=this.state.branches[id], active=selected===id;
+      return {id, label:b.label, color:b.color, active,
+        bg:active?this.mix(b.color,'#fffefa',0.12):'#fdfbf5', fg:active?'#22302b':'#5a5446',
+        border:active?b.color:'#e0d6c0', ring:active?('0 0 0 2px '+this.mix(b.color,'#fffefa',0.5)):'none',
+        pick:()=>onPick(id)};
+    });
+    const noneActive=!selected;
+    list.push({id:'', label:'No branch', color:'#cfc4ac', active:noneActive,
+      bg:noneActive?'#f3ede0':'#fdfbf5', fg:noneActive?'#22302b':'#9a8f78',
+      border:noneActive?'#cfc4ac':'#e0d6c0', ring:'none', pick:()=>onPick('')});
+    return list;
+  }
+  pickFormBranch(id){ this.setState(s=>({form:{...s.form,branch:id}})); }
+  pickPlaceBranch(id){ this.setState(s=>({placeForm:{...s.placeForm,branch:id}})); }
+  pickPhotoBranch(id){ this.setState(s=>({photoForm:{...s.photoForm,branch:id}})); }
+
+  submit=()=>{
+    const f=this.state.form;
+    if(!f.first.trim()){ this.setState({firstError:true}); return; }
+    const people={...this.state.people};
+    let order=[...this.state.order];
+    let activity=[...this.state.activity];
+    let id=this.state.editingId;
+    if(id){
+      const p={...people[id]};
+      p.first=f.first.trim(); p.last=f.last.trim(); p.born=f.born.trim(); p.place=f.place.trim(); p.branch=f.branch||'';
+      p.initials=((p.first[0]||'')+(p.last[0]||'')).toUpperCase();
+      if(f.story.trim()){ p.stories=[...(p.stories||[]),{title:'A note',author:'You',excerpt:f.story.trim(),hasPhoto:false}]; }
+      people[id]=p;
+      activity=[{ini:'Y',tint:'#5b6e63',text:'You updated '+p.first,time:'just now'},...activity];
+    } else {
+      id = (f.first+f.last).toLowerCase().replace(/[^a-z]/g,'')+'_'+Math.random().toString(36).slice(2,6);
+      const tint=this.tints[order.length % this.tints.length];
+      const roleMap={child:'New member',spouse:'Spouse',parent:'Parent'};
+      const p={first:f.first.trim(),last:f.last.trim(),born:f.born.trim(),place:f.place.trim(),branch:f.branch||'',
+        role:roleMap[f.rel]||'New member',initials:((f.first.trim()[0]||'')+(f.last.trim()[0]||'')).toUpperCase(),
+        tint,parents:[],partners:[],children:[],photos:0,events:[],
+        stories:f.story.trim()?[{title:'A note',author:'You',excerpt:f.story.trim(),hasPhoto:false}]:[]};
+      const rel=f.rel, to=f.relTo, tp=people[to]?{...people[to]}:null;
+      if(tp){
+        if(rel==='child'){ p.parents=[to]; tp.children=[...(tp.children||[]),id]; }
+        else if(rel==='spouse'){ const link={status:f.pstatus||'married',from:(f.pfrom||'').trim(),to:(f.pto||'').trim()}; p.partners=[...(p.partners||[]),{id:to,...link}]; tp.partners=[...(tp.partners||[]),{id,...link}]; }
+        else if(rel==='parent'){ p.children=[to]; tp.parents=[...(tp.parents||[]),id]; }
+        people[to]=tp;
+      }
+      people[id]=p; order.push(id);
+      activity=[{ini:p.initials,tint,text:'You added '+p.first+' '+p.last,time:'just now'},...activity];
+    }
+    this.setState({people,order,activity,modalOpen:false,screen:'profile',selected:id});
+    this.toTop();
+  }
+
+  renderVals(){
+    const s=this.state, P=s.people;
+    const accent = this.props.accent ?? '#b88a3e';
+    const tone = this.props.pageTone ?? 'cream';
+    const pageBg = tone==='mist' ? '#eef0ea' : tone==='linen' ? '#f6f3ec' : '#f4eee2';
+    const showPrompts = this.props.showPrompts ?? true;
+    const bc=(id)=>s.branches[id]?s.branches[id].color:'#cfc4ac';
+
+    const members = s.order.map(id=>this.node(id));
+    const prompts = s.prompts.map(g=>({text:g.text, open:()=>this.promptOpen(g)}));
+
+    // profile
+    const pid=s.selected, pp=P[pid]||{};
+    const statusMeta={married:{label:'Married',color:accent},partner:{label:'Partner',color:accent},divorced:{label:'Divorced',color:'#a4604a'},widowed:{label:'Widowed',color:'#8a8270'},separated:{label:'Separated',color:'#a4604a'}};
+    const partners=(pp.partners||[]).map(pt=>{const n=this.node(pt.id); if(!n) return null; const meta=statusMeta[pt.status]||{label:pt.status,color:'#8a8270'}; const yrs=pt.from&&pt.to?(pt.from+'\u2013'+pt.to):pt.from?('since '+pt.from):''; return Object.assign({},n,{statusLabel:meta.label,statusColor:meta.color,years:yrs,hasYears:!!yrs});}).filter(Boolean);
+    const stories=(pp.stories||[]);
+    const photoN=Math.min(pp.photos||0,7);
+    const placesForPerson=s.placesOrder.filter(plid=>((s.places[plid]||{}).people||[]).indexOf(pid)>=0).map(plid=>{const d=this.placeDisp(plid); return {id:d.id,name:d.name,type:d.type,location:d.location,era:d.era,typeColor:d.typeColor,open:d.open};});
+    const personPhotos=(s.album||[]).filter(ph=>ph.person===pid).map(ph=>({id:ph.id,caption:ph.caption}));
+    const person={
+      id:pid, first:pp.first||'', name:(pp.first||'')+' '+(pp.last||''),
+      maiden:pp.maiden||'', hasMaiden:!!pp.maiden,
+      role:pp.role||'', dates:this.life(pp), place:pp.place||'', hasPlace:!!pp.place,
+      initials:pp.initials||'', tint:pp.tint||'#5b6e63',
+      bio:pp.bio||'', hasBio:!!pp.bio,
+      parents:(pp.parents||[]).map(i=>this.node(i)).filter(Boolean), hasParents:(pp.parents||[]).length>0,
+      partners, hasPartners:partners.length>0,
+      children:(pp.children||[]).map(i=>this.node(i)).filter(Boolean), hasChildren:(pp.children||[]).length>0,
+      timeline:this.timeline(pp),
+      stories, hasStories:stories.length>0, noStories:stories.length===0,
+      photoCells:Array.from({length:photoN}),
+      albumPhotos:personPhotos, hasAlbumPhotos:personPhotos.length>0, noAlbumPhotos:personPhotos.length===0,
+      addPhoto:()=>this.openAddPhoto({person:pid}),
+      places:placesForPerson, hasPlaces:placesForPerson.length>0,
+      branchLabel: pp.branch&&s.branches[pp.branch]?s.branches[pp.branch].label:'',
+      branchColor: pp.branch?bc(pp.branch):'#cfc4ac', hasBranch:!!pp.branch
+    };
+
+    const t={};
+    ['james','eleanor','margaret','tom','robert','lucia','sarah','daniel'].forEach(id=>{ t[id]=this.node(id); });
+    const uJamesEleanor=this.unionInfo('james','eleanor',accent);
+    const uMargaretTom=this.unionInfo('margaret','tom',accent);
+    const uRobertLucia=this.unionInfo('robert','lucia',accent);
+    const mkEx=(anchor,exId)=>{const n=this.node(exId); return n?Object.assign({},n,{link:this.unionInfo(anchor,exId,accent)}):null;};
+    const exJames=mkEx('james','ruth');
+    const exMargaret=mkEx('margaret','carl');
+
+    const album=s.album.map(ph=>{
+      const pn=ph.person?this.node(ph.person):null;
+      const pl=ph.place?(()=>{const d=this.placeDisp(ph.place);return d?{id:d.id,name:d.name,typeColor:d.typeColor,open:d.open}:null;})():null;
+      return {id:ph.id, caption:ph.caption, h:ph.h, person:pn, hasPerson:!!pn, place:pl, hasPlace:!!pl, untagged:!pn&&!pl};
+    });
+
+    const relOptions=s.order.map(id=>({id,name:(P[id].first+' '+P[id].last)}));
+    const relLabels={child:'Child',spouse:'Spouse / partner',parent:'Parent'};
+    const relTabs=['child','spouse','parent'].map(v=>{const active=s.form.rel===v; return {value:v,label:relLabels[v],bg:active?accent:'#fdfbf5',fg:active?'#1a130a':'#5a5446',border:active?accent:'#e0d6c0',pick:()=>this.setState(st=>({form:{...st.form,rel:v}}))};});
+    const relToLabels={child:'Child of\u2026',spouse:'Married / partnered with\u2026',parent:'Parent of\u2026'};
+    const relToLabel=relToLabels[s.form.rel]||'Family member';
+
+    const personBranchChoices=this.branchChoices(s.form.branch, (id)=>this.pickFormBranch(id));
+    const placeBranchChoices=this.branchChoices(s.placeForm.branch, (id)=>this.pickPlaceBranch(id));
+    const photoBranchChoices=this.branchChoices(s.photoForm.branch, (id)=>this.pickPhotoBranch(id));
+    const branchLegend=s.branchOrder.map(id=>({id,label:s.branches[id].label,color:s.branches[id].color}));
+
+
+    return {
+      accent, pageBg, showPrompts,
+      isHome:s.screen==='home', isProfile:s.screen==='profile', isTree:s.screen==='tree', isPhotos:s.screen==='photos',
+      isPlaces:s.screen==='places', isPlace:s.screen==='place',
+      ulFam:(s.screen==='home'||s.screen==='profile')?accent:'transparent',
+      ulTree:s.screen==='tree'?accent:'transparent',
+      ulPhotos:s.screen==='photos'?accent:'transparent',
+      ulPlaces:(s.screen==='places'||s.screen==='place')?accent:'transparent',
+      goHome:this.goHome, goTree:this.goTree, goPhotos:this.goPhotos, goPlaces:this.goPlaces,
+      openAdd:this.openAdd, editPerson:this.editPerson, setScroll:this.setScroll,
+      personBranchChoices, placeBranchChoices, photoBranchChoices, branchLegend,
+      cFounders:bc('founders'), cCole:bc('cole'), cRobert:bc('robert'),
+      treeZoom:s.treeZoom, treeZoomPct:Math.round(s.treeZoom*100)+'%',
+      treeCanvasW:(s.treeNatW*s.treeZoom)+'px', treeCanvasH:(s.treeNatH*s.treeZoom)+'px',
+      setTreeInner:this.setTreeInner, setTreeScroll:this.setTreeScroll,
+      zoomIn:this.zoomIn, zoomOut:this.zoomOut, zoomReset:this.zoomReset,
+      members, memberCount:s.order.length, prompts, activity:s.activity,
+      person, t, album,
+      uJamesEleanor, uMargaretTom, uRobertLucia, exJames, exMargaret,
+      hasExJames:!!exJames, hasExMargaret:!!exMargaret,
+      placesList: s.placesOrder.map(id=>this.placeDisp(id)),
+      place: this.placeDisp(s.selectedPlace) || {},
+      placeModalOpen:s.placeModalOpen, placeForm:s.placeForm, placeNameError:s.placeNameError,
+      placeNameBorder:s.placeNameError?'#c47a5e':'#e0d6c0',
+      placeTypeOptions:['Home','Business','Church','Farm','Gathering place','Resting place'],
+      peopleToggles: s.order.map(id=>{const n=this.node(id); const active=s.placeForm.people.indexOf(id)>=0; return Object.assign({},n,{active,bg:active?accent:'#f6f1e6',fg:active?'#1a130a':'#5a5446',border:active?accent:'#e6ddca',toggle:()=>this.togglePlacePerson(id)});}),
+      onPName:this.setPF('name'), onPType:this.setPF('type'), onPLoc:this.setPF('location'), onPEra:this.setPF('era'), onPBlurb:this.setPF('blurb'),
+      openAddPlace:this.openAddPlace, closePlaceModal:this.closePlaceModal, submitPlace:this.submitPlace,
+      openAddPhoto:this.openAddPhoto, closePhotoModal:this.closePhotoModal, submitPhoto:this.submitPhoto,
+      photoModalOpen:s.photoModalOpen, photoForm:s.photoForm,
+      onPhCaption:this.setPhF('caption'), onPhPerson:this.setPhF('person'), onPhPlace:this.setPhF('place'),
+      photoPersonOptions:s.order.map(id=>({id,name:(P[id].first+' '+P[id].last)})),
+      photoPlaceOptions:s.placesOrder.map(id=>({id,name:s.places[id].name})),
+      modalOpen:s.modalOpen, modalTitle:s.editingId?'Edit details':'Add a family member',
+      saveLabel:s.editingId?'Save changes':'Add to family',
+      showRel:!s.editingId, relOptions, relTabs, relToLabel,
+      form:s.form, firstError:s.firstError, firstBorder:s.firstError?'#c47a5e':'#e0d6c0',
+      onFirst:this.setF('first'), onLast:this.setF('last'), onBorn:this.setF('born'),
+      onPlace:this.setF('place'), onStory:this.setF('story'), onRel:this.setF('rel'), onRelTo:this.setF('relTo'),
+      onPStatus:this.setF('pstatus'), onPFrom:this.setF('pfrom'), onPTo:this.setF('pto'),
+      showSpouseExtra:!s.editingId&&s.form.rel==='spouse',
+      closeModal:this.closeModal, submit:this.submit, stop:this.stop
+    };
+  }
+}
+</script>
+</body>
+</html>

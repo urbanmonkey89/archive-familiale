@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:9px;width:150px;box-sizing:border-box;flex-shrink:0;background:{{ p.cardBg }};border:1px solid #e6ddca;border-left:4px solid {{ p.branchColor }};border-radius:12px;padding:9px 11px 9px 8px;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease" style-hover="transform:translateY(-2px);box-shadow:0 8px 20px -10px rgba(20,36,29,.35);border-color:{{ accent }}">
+  <span style="width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Spectral',serif;font-size:13px;color:#f4eee2;background:{{ p.tint }}">{{ p.initials }}</span>
+  <span style="text-align:left;line-height:1.2;min-width:0">
+    <span style="display:block;font-family:'Spectral',serif;font-size:14.5px;font-weight:500;color:#22302b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.first }}</span>
+    <span style="display:block;font-size:11px;color:#837a68;white-space:nowrap">{{ p.dates }}</span>
+  </span>
+</button>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:150,&quot;height&quot;:60}}"></script>
+</body>
+</html>

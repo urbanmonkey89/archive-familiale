@@ -1,0 +1,17 @@
+node_modules/
+dist/
+site/
+*.log
+.DS_Store
+Thumbs.db
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+
+# Jamais de vraies données familiales dans le dépôt public
+archive.json
+medias/
+sauvegardes/
+*.ged
+Archive*/
