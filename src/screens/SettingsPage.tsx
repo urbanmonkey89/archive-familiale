@@ -24,7 +24,7 @@ export function SettingsPage() {
           <h1 className="page-title">L'archive</h1>
           <p className="lede">Dossier ouvert : <b>{adapter.label}</b>{adapter.kind === 'demo' && ' (exemple, rien n’est enregistré)'}</p>
         </div>
-        <button className="btn btn-ghost" onClick={async () => { await flush(); close(); }}>Fermer l'archive</button>
+        <button className="btn btn-ghost" onClick={async () => { await flush(); close(); }} title="Revenir à l'écran d'accueil pour ouvrir ou créer une autre archive">Fermer / changer d'archive</button>
       </div>
 
       <div className="settings">

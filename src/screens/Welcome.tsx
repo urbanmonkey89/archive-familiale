@@ -18,8 +18,8 @@ export function Welcome() {
     getPlatform().then(async (p) => {
       setPlatform(p);
       const l = await p.lastArchive().catch(() => null);
-      if (l?.granted) {
-        // Réouverture automatique de la dernière archive.
+      if (l?.granted && !useApp.getState().closedByUser) {
+        // Au lancement : réouverture automatique de la dernière archive.
         run(l.reopen);
       } else setLast(l);
     });

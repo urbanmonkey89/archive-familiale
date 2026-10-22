@@ -18,6 +18,8 @@ interface AppState {
   saveState: SaveState;
   saveError?: string;
   toasts: Toast[];
+  /** true après « Fermer l'archive » : l'écran d'accueil ne rouvre pas la dernière archive tout seul. */
+  closedByUser: boolean;
   open: (adapter: StorageAdapter) => Promise<void>;
   close: () => void;
   toast: (text: string, kind?: Toast['kind']) => void;
@@ -29,6 +31,7 @@ export const useApp = create<AppState>((set, get) => ({
   readOnly: false,
   saveState: 'saved',
   toasts: [],
+  closedByUser: false,
 
   open: async (adapter) => {
     const archive = await adapter.load();
@@ -38,7 +41,11 @@ export const useApp = create<AppState>((set, get) => ({
     }
   },
 
-  close: () => set({ archive: null, adapter: null, readOnly: false }),
+  close: () => {
+    // Repartir de l'accueil : la prochaine archive ouverte ne doit pas s'afficher sur les réglages.
+    if (typeof location !== 'undefined') location.hash = '#/';
+    set({ archive: null, adapter: null, readOnly: false, closedByUser: true });
+  },
 
   toast: (text, kind = 'info') => {
     const id = Date.now() + Math.random();
