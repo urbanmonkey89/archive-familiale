@@ -44,6 +44,26 @@ jobs:
       - run: npm ci
       - run: npm test
 
+      # Compilation « à part » : en cas d'échec, la fin du journal est publiée en annotation,
+      # lisible sur la page de la compilation sans être connecté à GitHub.
+      - name: Compilation
+        id: build
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          set -o pipefail
+          npm run tauri build -- --ci 2>&1 | tee build.log
+
+      - name: Afficher l'erreur de compilation
+        if: failure() && steps.build.outcome == 'failure'
+        shell: bash
+        run: |
+          msg=$(grep -vE '^\s*(Compiling|Downloaded|Downloading) ' build.log | tail -n 60 | sed 's/\x1b\[[0-9;]*m//g' | sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g')
+          echo "::error title=Erreur de compilation::$msg"
+
+      # Re-fabrique les installeurs (rapide : déjà compilé) et publie la Release.
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
