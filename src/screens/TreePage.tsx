@@ -174,7 +174,8 @@ export function TreePage({ focusId }: { focusId?: string }) {
             }
           }}
         >
-          <div className="tree-canvas" style={{ width: layout.width * zoom, height: layout.height * zoom }}>
+          {/* margin auto : un petit arbre est centré au lieu d'être collé à gauche */}
+          <div className="tree-canvas" style={{ width: layout.width * zoom, height: layout.height * zoom, margin: '0 auto' }}>
             <div className="tree-inner" style={{ width: layout.width, height: layout.height, transform: `scale(${zoom})` }}>
               <svg className="tree-svg" width={layout.width} height={layout.height}>
                 {layout.edges.map((e) => (

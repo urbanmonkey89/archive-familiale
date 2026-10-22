@@ -17,6 +17,8 @@ export const LINK_W = 64;
 export const H_GAP = 26;
 export const ROW_STEP = 140;
 const PAD = 40;
+/** Marge du haut plus grande : les barres d'outils (générations, zoom) sont posées sur l'arbre. */
+const PAD_TOP = 90;
 
 export interface TNode {
   key: string;
@@ -256,7 +258,7 @@ export function layoutTree(ix: Index, focusId: string, opts: LayoutOptions): Tre
   const ys = nodes.map((n) => n.y);
   for (const e of edges) for (const [x, y] of e.points) { xs.push(x); ys.push(y); }
   const minX = Math.min(...xs) - PAD;
-  const minY = Math.min(...ys) - PAD;
+  const minY = Math.min(...ys) - PAD_TOP;
   const maxX = Math.max(...nodes.map((n) => n.x + CARD_W), ...links.map((l) => l.x + l.width)) + PAD;
   const maxY = Math.max(...nodes.map((n) => n.y + CARD_H)) + PAD;
   for (const n of nodes) { n.x -= minX; n.y -= minY; }
